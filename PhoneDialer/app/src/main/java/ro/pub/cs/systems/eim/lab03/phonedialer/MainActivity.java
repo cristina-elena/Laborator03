@@ -1,11 +1,20 @@
 package ro.pub.cs.systems.eim.lab03.phonedialer;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+
 
 public class MainActivity extends AppCompatActivity{
 
@@ -26,6 +35,7 @@ public class MainActivity extends AppCompatActivity{
     ImageButton mClickButton_delete;
     ImageButton mClickButton_call;
     ImageButton mClickButton_decline;
+    final public static int PERMISSION_REQUEST_CALL_PHONE = 1;
 
 
     @Override
@@ -167,5 +177,26 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        mClickButton_call.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            MainActivity.this,
+                            new String[]{Manifest.permission.CALL_PHONE}, PERMISSION_REQUEST_CALL_PHONE);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" + textView.getText().toString()));
+                    startActivity(intent);
+                }
+            }
+        });
+
+
+        mClickButton_decline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 }
